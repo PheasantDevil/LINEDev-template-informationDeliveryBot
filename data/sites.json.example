@@ -3,14 +3,19 @@
   "count": 0,
   "sites": [
     {
-      "id": "ai_site_dummy",
-      "name": "AI情報サイト例（サンプル）",
-      "url": "https://example.com/ai-news",
+      "id": "ai_weekly",
+      "name": "AI Weekly",
+      "url": "https://aiweekly.co/",
       "category": "AI",
-      "collector_type": "scraper",
+      "collector_type": "email",
       "collector_config": {
-        "check_interval_minutes": 60,
-        "scraping_selector": ".article-list > article"
+        "email_account_id": "gmail_account_001",
+        "subscription_email": "infobot.delivery+aiweekly@gmail.com",
+        "sender_email": "newsletter@aiweekly.co",
+        "subject_pattern": "AI News Weekly|Issue #",
+        "check_interval_minutes": 15,
+        "summary_enabled": true,
+        "summary_model": "gemini-1.5-flash"
       },
       "enabled": false,
       "created_at": "2025-01-12T00:00:00",
@@ -21,14 +26,19 @@
       }
     },
     {
-      "id": "drone_site_dummy",
+      "id": "drone_site_example",
       "name": "ドローン情報サイト例（サンプル）",
       "url": "https://example.com/drone-news",
       "category": "ドローン",
-      "collector_type": "rss",
+      "collector_type": "email",
       "collector_config": {
+        "email_account_id": "gmail_account_001",
+        "subscription_email": "infobot.delivery+drone@gmail.com",
+        "sender_email": "newsletter@example.com",
+        "subject_pattern": "ドローン情報",
         "check_interval_minutes": 60,
-        "rss_url": "https://example.com/drone-news/feed.xml"
+        "summary_enabled": true,
+        "summary_model": "gemini-1.5-flash"
       },
       "enabled": false,
       "created_at": "2025-01-12T00:00:00",

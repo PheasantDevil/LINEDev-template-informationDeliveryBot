@@ -3,55 +3,62 @@
 ## 📋 実装状況
 
 ### ✅ 完了済み
-- [x] Phase 1: 基盤構築（LINE Bot基本機能、ユーザー登録）
+
+- [x] Phase 1: 基盤構築（LINE Bot 基本機能、ユーザー登録）
 - [x] 情報収集インターフェース（`collectors/base.py`）
 - [x] 差分検知システム（`diff_detector.py`）
 - [x] 初期サイトデータ（サンプル）
 - [x] テストガイド作成
-- [x] GitHub Secrets設定（完了済み）
+- [x] GitHub Secrets 設定（完了済み）
 
 ---
 
-## 🔴 優先度: 高（Phase 1完了に必要）
+## 🔴 優先度: 高（Phase 1 完了に必要）
 
 ### 1. 具体的な情報収集実装（再検討版）
 
 **⚠️ 実装方針の変更:**
-- スクレイパー・RSS方式の問題点を踏まえ、メール方式を優先実装
+
+- スクレイパー・RSS 方式の問題点を踏まえ、メール方式を優先実装
 - 詳細は `docs/20260112/004-prompt.md` を参照
 
 #### 1.1 メール受信・要約方式（`src/collectors/email_collector.py`）⭐ 最優先
+
 - [ ] `BaseInformationCollector`を継承した`EmailCollector`クラスを実装
-- [ ] IMAP/POP3でのメール受信機能
-- [ ] メールIDベースの重複排除
+- [ ] IMAP/POP3 でのメール受信機能
+- [ ] メール ID ベースの重複排除
 - [ ] メール本文からの情報抽出（リンク、タイトル）
-- [ ] AI要約機能（オプション、無料枠を考慮）
+- [ ] AI 要約機能（オプション、無料枠を考慮）
 - [ ] メールアカウント管理機能
 
 #### 1.2 サイト更新検知方式（`src/collectors/change_detector.py`）
+
 - [ ] `BaseInformationCollector`を継承した`ChangeDetectorCollector`クラスを実装
 - [ ] ページハッシュ値ベースの変更検知
 - [ ] 変更検知後の詳細取得
 - [ ] エラーハンドリング
 
-#### 1.3 RSSリーダー実装（`src/collectors/rss_reader.py`）※ 補完的
+#### 1.3 RSS リーダー実装（`src/collectors/rss_reader.py`）※ 補完的
+
 - [ ] `BaseInformationCollector`を継承した`RSSReaderCollector`クラスを実装
-- [ ] RSS/Atomフィードのパース
+- [ ] RSS/Atom フィードのパース
 - [ ] 複数のフィード形式に対応
 - [ ] エラーハンドリング
 
 #### 1.4 スクレイパー実装（`src/collectors/scraper.py`）※ 補完的
+
 - [ ] `BaseInformationCollector`を継承した`ScraperCollector`クラスを実装
-- [ ] BeautifulSoupを使用したHTMLパース
+- [ ] BeautifulSoup を使用した HTML パース
 - [ ] サイト設定に基づいた柔軟なスクレイピング
 - [ ] エラーハンドリングとリトライ機能
 
 #### 1.3 情報収集・配信実行スクリプト（`src/collect_and_deliver.py`）
+
 - [ ] 有効なサイトを読み込み
 - [ ] 各サイトの収集タイミングをチェック
 - [ ] 情報収集の実行
 - [ ] 差分検知で新着情報を抽出
-- [ ] 新着情報をLINEで配信
+- [ ] 新着情報を LINE で配信
 - [ ] ログ出力
 
 ---
@@ -60,21 +67,24 @@
 
 ### 2. 自動実行システム
 
-#### 2.1 GitHub Actionsワークフロー（`.github/workflows/collect-and-deliver.yml`）
-- [ ] 30分間隔での自動実行設定
+#### 2.1 GitHub Actions ワークフロー（`.github/workflows/collect-and-deliver.yml`）
+
+- [ ] 30 分間隔での自動実行設定
 - [ ] 手動実行も可能にする（`workflow_dispatch`）
-- [ ] 環境変数の設定（GitHub Secretsから取得）
+- [ ] 環境変数の設定（GitHub Secrets から取得）
 - [ ] エラーハンドリングと通知
 
 ### 3. サイト管理ツール
 
 #### 3.1 サイト追加ツール（`tools/add_site.py`）
+
 - [ ] コマンドライン引数のパース
-- [ ] URLからRSSフィードの自動検出
+- [ ] URL から RSS フィードの自動検出
 - [ ] スクレイピング設定の推奨値提示
 - [ ] `sites.json`への自動追加
 
 #### 3.2 サイト設定管理（`src/collectors/site_config.py`）
+
 - [ ] サイト設定の読み込み・保存
 - [ ] 設定のバリデーション
 - [ ] 設定の更新機能
@@ -82,54 +92,62 @@
 ### 4. 実際のサイトデータ
 
 #### 4.1 初期サイトの選定と追加
-- [ ] AIカテゴリ: 2-3サイトを選定
-- [ ] ドローンカテゴリ: 1-2サイトを選定
+
+- [ ] AI カテゴリ: 2-3 サイトを選定
+- [ ] ドローンカテゴリ: 1-2 サイトを選定
 - [ ] `data/sites.json`に実際のサイト情報を追加
 - [ ] 各サイトの収集設定を最適化
 
 ---
 
-## 🟢 優先度: 低（Phase 3以降）
+## 🟢 優先度: 低（Phase 3 以降）
 
 ### 5. 配信機能強化
 
 #### 5.1 カテゴリ別グループ管理
-- [ ] カテゴリごとのLINEグループ管理機能
+
+- [ ] カテゴリごとの LINE グループ管理機能
 - [ ] グループへのユーザー自動追加機能
 - [ ] `data/category_groups.json`の管理
 
 #### 5.2 情報検索機能
-- [ ] LINE Botでの情報検索コマンド
+
+- [ ] LINE Bot での情報検索コマンド
 - [ ] カテゴリ・キーワードでの検索
 - [ ] 検索結果の表示
 
 ### 6. テストとデプロイ
 
-#### 6.1 実際のLINE Botとの連携テスト
-- [ ] ローカル環境でのテスト（ngrok使用）
+#### 6.1 実際の LINE Bot との連携テスト
+
+- [ ] ローカル環境でのテスト（ngrok 使用）
 - [ ] 各コマンドの動作確認
 - [ ] 情報収集・配信の動作確認
 - [ ] エラーハンドリングの確認
 
-#### 6.2 Webhookサーバーのデプロイ
+#### 6.2 Webhook サーバーのデプロイ
+
 - [ ] Render.com（または他のホスティング）でのデプロイ
 - [ ] 環境変数の設定
-- [ ] Webhook URLの設定
+- [ ] Webhook URL の設定
 - [ ] 動作確認
 
 ### 7. 高度な機能（Phase 4）
 
 #### 7.1 メール要約機能（`src/collectors/email_processor.py`）
-- [ ] IMAP/POP3でのメール受信
+
+- [ ] IMAP/POP3 でのメール受信
 - [ ] メール本文からの情報抽出
-- [ ] AI要約機能（オプション）
+- [ ] AI 要約機能（オプション）
 
 #### 7.2 サービス紹介サイト
-- [ ] GitHub Pagesの設定
+
+- [ ] GitHub Pages の設定
 - [ ] サイト一覧ページの作成
 - [ ] 各サイトの紹介ページ作成
 
 #### 7.3 統計・レポート機能
+
 - [ ] 収集統計の表示
 - [ ] 配信統計の表示
 - [ ] ユーザー統計の表示
@@ -138,19 +156,22 @@
 
 ## 📝 実装の優先順位
 
-### 即座に実装すべき（Phase 1完了）
+### 即座に実装すべき（Phase 1 完了）
+
 1. **スクレイパー実装**（`scraper.py`）
-2. **RSSリーダー実装**（`rss_reader.py`）
+2. **RSS リーダー実装**（`rss_reader.py`）
 3. **情報収集・配信実行スクリプト**（`collect_and_deliver.py`）
 
 ### 次に実装すべき（Phase 2）
-4. **GitHub Actionsワークフロー**
+
+4. **GitHub Actions ワークフロー**
 5. **サイト追加ツール**（`add_site.py`）
 6. **実際のサイトデータへの置き換え**
 
-### その後（Phase 3以降）
+### その後（Phase 3 以降）
+
 7. **連携テストの実施**
-8. **Webhookサーバーのデプロイ**
+8. **Webhook サーバーのデプロイ**
 9. **カテゴリ別グループ管理**
 10. **情報検索機能**
 
@@ -159,8 +180,9 @@
 ## 🎯 次のアクション
 
 **最優先で実装すべき項目：**
+
 1. `src/collectors/scraper.py` - スクレイパー実装
-2. `src/collectors/rss_reader.py` - RSSリーダー実装
+2. `src/collectors/rss_reader.py` - RSS リーダー実装
 3. `src/collect_and_deliver.py` - 収集・配信実行スクリプト
 
 これらが完了すれば、基本的な情報収集・配信機能が動作します。
@@ -172,6 +194,6 @@
 ## 📝 実装方針の変更履歴
 
 ### 2025-01-12: 情報収集方法の再検討
-- スクレイパー・RSS方式の問題点を踏まえ、メール方式を優先実装に変更
-- 詳細は `docs/20260112/004-prompt.md` を参照
 
+- スクレイパー・RSS 方式の問題点を踏まえ、メール方式を優先実装に変更
+- 詳細は `docs/20260112/004-prompt.md` を参照

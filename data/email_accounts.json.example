@@ -4,10 +4,10 @@
   "accounts": [
     {
       "id": "gmail_account_001",
-      "email": "information.bot@gmail.com",
+      "email": "infobot.delivery@gmail.com",
       "imap_server": "imap.gmail.com",
       "imap_port": 993,
-      "username": "information.bot@gmail.com",
+      "username": "infobot.delivery@gmail.com",
       "password": "your_app_password_here",
       "provider": "gmail",
       "plus_alias_enabled": true,

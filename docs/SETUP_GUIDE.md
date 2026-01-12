@@ -53,6 +53,13 @@
 # .envファイル
 LINE_CHANNEL_ACCESS_TOKEN=your_channel_access_token_here
 LINE_CHANNEL_SECRET=your_channel_secret_here
+
+# Gmail設定（メール方式使用時）
+GMAIL_ACCOUNT=infobot.delivery@gmail.com
+GMAIL_APP_PASSWORD=your_app_password_here
+
+# Gemini API設定（AI要約使用時）
+GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
 ⚠️ `.env`ファイルは`.gitignore`に含まれているため、Git にはコミットされません。
