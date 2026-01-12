@@ -2,7 +2,12 @@
 
 import os
 import sys
+from pathlib import Path
 from typing import Dict, List
+
+# プロジェクトルートをパスに追加
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
 
 from src.collectors.base import BaseInformationCollector, InformationItem
 from src.collectors.email_collector import EmailCollector

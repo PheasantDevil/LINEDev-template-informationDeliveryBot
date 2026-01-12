@@ -4,11 +4,18 @@ import email
 import imaplib
 import os
 import re
+import sys
 from datetime import datetime
 from email.header import decode_header
+from pathlib import Path
 from typing import Dict, List, Optional
 
 from bs4 import BeautifulSoup
+
+# プロジェクトルートをパスに追加
+project_root = Path(__file__).parent.parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
 
 from src.collectors.base import BaseInformationCollector, InformationItem
 from src.storage import Storage

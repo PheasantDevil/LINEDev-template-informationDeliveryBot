@@ -1,8 +1,15 @@
 """情報収集の統一インターフェース"""
 
+import sys
 from abc import ABC, abstractmethod
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Optional
+
+# プロジェクトルートをパスに追加
+project_root = Path(__file__).parent.parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
 
 from src.storage import Storage
 
