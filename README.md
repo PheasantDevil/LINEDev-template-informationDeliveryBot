@@ -131,6 +131,8 @@ pip install -r requirements.txt
 ## 📚 ドキュメント
 
 - `docs/SETUP_GUIDE.md`: **セットアップガイド（手動設定手順）** ⭐
+- `docs/TESTING_GUIDE.md`: **テストガイド（連携テスト手順）** ⭐
+- `docs/TODO.md`: **残りのタスク一覧** ⭐
 - `docs/README.md`: ドキュメント管理方法
 - `docs/YYYYMMDD/`: 要件定義・技術検証の記録
 - `docs/sites/`: 情報発信サイトの紹介ページ
