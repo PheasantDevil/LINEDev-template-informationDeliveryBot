@@ -166,4 +166,30 @@ class Storage:
             Dict: カテゴリグループ情報データ
         """
         return self.load_json('category_groups.json')
+    
+    def save_email_accounts(self, accounts: List[Dict]) -> bool:
+        """
+        メールアカウント情報を保存
+        
+        Args:
+            accounts: メールアカウント情報のリスト
+            
+        Returns:
+            bool: 保存が成功したかどうか
+        """
+        data = {
+            'updated_at': datetime.now().isoformat(),
+            'count': len(accounts),
+            'accounts': accounts
+        }
+        return self.save_json('email_accounts.json', data)
+    
+    def load_email_accounts(self) -> Optional[Dict]:
+        """
+        メールアカウント情報を読み込み
+        
+        Returns:
+            Dict: メールアカウント情報データ
+        """
+        return self.load_json('email_accounts.json')
 
