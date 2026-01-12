@@ -2,12 +2,18 @@
 
 import json
 import os
+from pathlib import Path
 
 from flask import Flask, abort, request
+from dotenv import load_dotenv
 
 from src.line_notifier import LineNotifier
 from src.user_manager import UserManager
 from src.storage import Storage
+
+# 環境変数の読み込み
+project_root = Path(__file__).parent.parent
+load_dotenv(project_root / '.env')
 
 app = Flask(__name__)
 

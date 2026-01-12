@@ -9,6 +9,10 @@ from typing import Dict, List
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+# 環境変数の読み込み
+from dotenv import load_dotenv
+load_dotenv(project_root / '.env')
+
 from src.collectors.base import BaseInformationCollector, InformationItem
 from src.collectors.email_collector import EmailCollector
 from src.diff_detector import DiffDetector
