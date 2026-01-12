@@ -112,7 +112,9 @@ class EmailCollector(BaseInformationCollector):
             imap_server = email_account.get('imap_server', 'imap.gmail.com')
             imap_port = email_account.get('imap_port', 993)
             username = email_account.get('username')
-            password = email_account.get('password') or os.getenv('GMAIL_APP_PASSWORD')
+            # パスワードはemail_accounts.jsonまたは環境変数から取得
+            # 環境変数GMAIL_APP_PASSWORDが優先される（セキュリティのため）
+            password = os.getenv('GMAIL_APP_PASSWORD') or email_account.get('password')
             
             if not password:
                 print("警告: メールアカウントのパスワードが設定されていません")
