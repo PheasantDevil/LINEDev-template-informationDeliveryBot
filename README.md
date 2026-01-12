@@ -1,6 +1,6 @@
 # 📰 情報配信 LINE Bot
 
-AI、ドローン、SDGsなどの最新情報を扱うサイトから情報を収集し、LINE経由で自動配信するBotシステムです。
+AI、ドローン、SDGs などの最新情報を扱うサイトから情報を収集し、LINE 経由で自動配信する Bot システムです。
 
 [![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-enabled-brightgreen)](https://github.com/features/actions)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue)](https://www.python.org/)
@@ -8,21 +8,21 @@ AI、ドローン、SDGsなどの最新情報を扱うサイトから情報を�
 
 ## 📝 概要
 
-このプロジェクトは、複数の情報発信サイトから最新情報を収集し、LINE経由でリアルタイムに配信します。情報源サイトは統一性がなく、メールや独自の方法で発信しているため、このBotで一元管理します。
+このプロジェクトは、複数の情報発信サイトから最新情報を収集し、LINE 経由でリアルタイムに配信します。情報源サイトは統一性がなく、メールや独自の方法で発信しているため、この Bot で一元管理します。
 
 **主な機能:**
 
 - ✅ **リアルタイム情報収集**: サイト更新直後に情報を収集
 - ✅ **複数サイト対応**: スクレイピング、RSS、メール要約に対応
-- ✅ **カテゴリ別配信**: AI、ドローン、SDGsなど、カテゴリごとに配信
-- ✅ **ユーザー登録**: LINE Bot内で完結するユーザー登録
+- ✅ **カテゴリ別配信**: AI、ドローン、SDGs など、カテゴリごとに配信
+- ✅ **ユーザー登録**: LINE Bot 内で完結するユーザー登録
 - ✅ **差分検知**: 新着情報のみを配信
 - ✅ **完全無料運用可能**（無料枠内）
 
 ## 🎯 目標
 
 - 情報発信サイトの情報を逐一集める
-- 統一性のない情報発信をLINEで一元管理
+- 統一性のない情報発信を LINE で一元管理
 - 自分の得たい情報を埋もれさせずにチェックできる
 - どんな情報発信中のサイトがあるかを知ることができる
 - どんな情報を定期的に知ることが必要かを発信
@@ -92,7 +92,7 @@ LINEDev-template-informationDeliveryBot/
 - GitHub アカウント
 - LINE アカウント
 - LINE Developers アカウント（無料）
-- （Webhook用）Render.com アカウントまたは他のホスティングサービス
+- （Webhook 用）Render.com アカウントまたは他のホスティングサービス
 
 ### 1. リポジトリのクローン
 
@@ -105,16 +105,16 @@ cd LINEDev-template-informationDeliveryBot
 
 1. [LINE Developers Console](https://developers.line.biz/)にアクセス
 2. 新規プロバイダーを作成
-3. Messaging APIチャネルを作成
+3. Messaging API チャネルを作成
 4. チャネルアクセストークンとチャネルシークレットを取得
-5. LINE User IDを取得（友だち追加後）
+5. LINE User ID を取得（友だち追加後）
 
 ### 3. GitHub Secrets の設定
 
 GitHub リポジトリの **Settings** > **Secrets and variables** > **Actions** で以下を設定：
 
 - `LINE_CHANNEL_ACCESS_TOKEN`: チャネルアクセストークン
-- `LINE_CHANNEL_SECRET`: チャネルシークレット（Webhook用）
+- `LINE_CHANNEL_SECRET`: チャネルシークレット（Webhook 用）
 
 ### 4. 依存関係のインストール
 
@@ -124,12 +124,13 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 5. Webhookサーバーのデプロイ
+### 5. Webhook サーバーのデプロイ
 
-詳細は `docs/` 内のドキュメントを参照してください。
+詳細は `docs/SETUP_GUIDE.md` を参照してください。
 
 ## 📚 ドキュメント
 
+- `docs/SETUP_GUIDE.md`: **セットアップガイド（手動設定手順）** ⭐
 - `docs/README.md`: ドキュメント管理方法
 - `docs/YYYYMMDD/`: 要件定義・技術検証の記録
 - `docs/sites/`: 情報発信サイトの紹介ページ
@@ -138,7 +139,7 @@ pip install -r requirements.txt
 
 ### 実装フェーズ
 
-- **Phase 1**: 基盤構築（LINE Bot基本機能、ユーザー登録）
+- **Phase 1**: 基盤構築（LINE Bot 基本機能、ユーザー登録）
 - **Phase 2**: 情報収集拡張（複数サイト対応、差分検知）
 - **Phase 3**: 配信機能強化（自動実行、グループ管理）
 - **Phase 4**: 高度な機能（メール要約、サービス紹介サイト）
@@ -160,7 +161,7 @@ MIT License
 
 ## 🤝 貢献
 
-Pull Requestsを歓迎します！
+Pull Requests を歓迎します！
 
 ---
 
