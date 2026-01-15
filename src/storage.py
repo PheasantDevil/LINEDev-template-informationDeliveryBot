@@ -91,7 +91,7 @@ class Storage:
     
     def save_site(self, site: Dict) -> bool:
         """
-        個別サイト設定を保存
+        個別サイト設定を保存し、sites.jsonも更新
         
         Args:
             site: サイト設定
@@ -114,12 +114,48 @@ class Storage:
         file_path = self.sites_dir / filename
         
         try:
+            # 個別ファイルを保存
             with open(file_path, 'w', encoding='utf-8') as f:
                 json.dump(site_data, f, ensure_ascii=False, indent=2)
+            
+            # sites.jsonも更新（集約ファイル）
+            self._update_sites_json()
+            
             return True
         except Exception as e:
             print(f"エラー: サイト設定の保存に失敗しました - {e}")
             return False
+    
+    def _update_sites_json(self):
+        """
+        data/sites/内の個別ファイルを集約してsites.jsonを更新
+        """
+        sites = []
+        
+        # sitesディレクトリ内の全JSONファイルを読み込み
+        for file_path in self.sites_dir.glob('*.json'):
+            # _index.jsonやexampleファイルはスキップ
+            if file_path.name.startswith('_') or file_path.name.endswith('.example.json'):
+                continue
+            
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    site_data = json.load(f)
+                    # updated_atはメタデータなので除外
+                    if 'updated_at' in site_data:
+                        del site_data['updated_at']
+                    sites.append(site_data)
+            except Exception as e:
+                print(f"警告: {file_path.name}の読み込みに失敗しました - {e}")
+                continue
+        
+        # sites.jsonを更新
+        data = {
+            'updated_at': datetime.now().isoformat(),
+            'count': len(sites),
+            'sites': sites
+        }
+        self.save_json('sites.json', data)
     
     def load_site(self, site_id: str) -> Optional[Dict]:
         """
@@ -152,12 +188,20 @@ class Storage:
         Returns:
             Dict: サイト設定データ（後方互換性のため従来の形式を維持）
         """
+        # sites.jsonが存在する場合は優先的に読み込む
+        sites_json_path = self.data_dir / 'sites.json'
+        if sites_json_path.exists():
+            data = self.load_json('sites.json')
+            if data:
+                return data
+        
+        # sites.jsonが存在しない場合は個別ファイルから集約
         sites = []
         
         # sitesディレクトリ内の全JSONファイルを読み込み
         for file_path in self.sites_dir.glob('*.json'):
-            # _index.jsonなどの特殊ファイルはスキップ
-            if file_path.name.startswith('_'):
+            # _index.jsonやexampleファイルはスキップ
+            if file_path.name.startswith('_') or file_path.name.endswith('.example.json'):
                 continue
             
             try:
@@ -171,11 +215,16 @@ class Storage:
                 print(f"警告: {file_path.name}の読み込みに失敗しました - {e}")
                 continue
         
-        return {
+        data = {
             'updated_at': datetime.now().isoformat(),
             'count': len(sites),
             'sites': sites
         }
+        
+        # sites.jsonを更新（次回から読み込めるように）
+        self.save_json('sites.json', data)
+        
+        return data
     
     def save_sites(self, sites: List[Dict]) -> bool:
         """
@@ -191,11 +240,13 @@ class Storage:
         for site in sites:
             if not self.save_site(site):
                 success = False
+        # save_site内で_update_sites_jsonが呼ばれるが、最後に念のため更新
+        self._update_sites_json()
         return success
     
     def delete_site(self, site_id: str) -> bool:
         """
-        サイト設定を削除
+        サイト設定を削除し、sites.jsonも更新
         
         Args:
             site_id: サイトID
@@ -211,6 +262,8 @@ class Storage:
         
         try:
             file_path.unlink()
+            # sites.jsonも更新
+            self._update_sites_json()
             return True
         except Exception as e:
             print(f"エラー: サイト設定の削除に失敗しました - {e}")
