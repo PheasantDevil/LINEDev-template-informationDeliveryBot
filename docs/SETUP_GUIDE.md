@@ -95,22 +95,46 @@ $env:LINE_CHANNEL_SECRET='your_channel_secret_here'
 
 サイト一覧機能を使用する場合、初期データファイルを作成します。
 
-### 3.1 `data/sites.json`の作成
+### 3.1 `data/sites/`ディレクトリの設定
+
+サイト設定は個別ファイルで管理されます。各サイトは`data/sites/[site_id].json`として保存されます。
 
 ```bash
-# dataディレクトリにsites.jsonを作成
-touch data/sites.json
+# sitesディレクトリが存在することを確認（自動生成されます）
+ls -la data/sites/
 ```
 
-初期データの例：
+新しいサイトを追加する場合は、`data/sites/`ディレクトリ内に`[site_id].json`ファイルを作成します。
+
+例：`data/sites/ai_weekly.json`
 
 ```json
 {
-  "updated_at": "2025-01-12T00:00:00",
-  "count": 0,
-  "sites": []
+  "id": "ai_weekly",
+  "name": "AI Weekly",
+  "url": "https://aiweekly.co/",
+  "category": "AI",
+  "collector_type": "email",
+  "collector_config": {
+    "email_account_id": "gmail_account_001",
+    "subscription_email": "infobot.delivery+aiweekly@gmail.com",
+    "sender_email": "newsletter@aiweekly.co",
+    "subject_pattern": "AI News Weekly|Issue #",
+    "check_interval_minutes": 15,
+    "summary_enabled": true,
+    "summary_model": "gemini-1.5-flash"
+  },
+  "enabled": false,
+  "created_at": "2025-01-12T00:00:00",
+  "last_collected_at": null,
+  "stats": {
+    "total_collected": 0,
+    "last_7_days": 0
+  }
 }
 ```
+
+設定例ファイルは`data/sites/*.example.json`を参照してください。
 
 または、`tools/add_site.py`を使用してサイトを追加することもできます（実装後）。
 

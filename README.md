@@ -76,7 +76,9 @@ LINEDev-template-informationDeliveryBot/
 │   ├── add_site.py                    # サイト追加ツール
 │   └── generate_site_page.py          # サイトページ生成
 ├── data/
-│   ├── sites.json                     # サイト設定
+│   ├── sites/                          # サイト設定（個別ファイル）
+│   │   ├── [site_id].json             # 各サイトの設定
+│   │   └── *.example.json             # 設定例
 │   ├── information_items.json          # 収集した情報
 │   ├── users.json                      # ユーザー情報
 │   └── category_groups.json           # カテゴリグループ

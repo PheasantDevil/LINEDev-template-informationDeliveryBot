@@ -19,6 +19,11 @@ class Storage:
         """
         self.data_dir = Path(data_dir)
         self.data_dir.mkdir(parents=True, exist_ok=True)
+        self.sites_dir = self.data_dir / 'sites'
+        self.sites_dir.mkdir(parents=True, exist_ok=True)
+        
+        # 既存のsites.jsonを移行（初回のみ）
+        self._migrate_legacy_sites()
     
     def save_json(self, filename: str, data: Dict) -> bool:
         """
@@ -63,9 +68,118 @@ class Storage:
             print(f"エラー: データの読み込みに失敗しました - {e}")
             return None
     
+    def _migrate_legacy_sites(self):
+        """
+        既存のsites.jsonを個別ファイルに移行（初回のみ）
+        """
+        legacy_file = self.data_dir / 'sites.json'
+        if not legacy_file.exists():
+            return
+        
+        # 既にsitesディレクトリにファイルがある場合は移行済み
+        if any(self.sites_dir.glob('*.json')):
+            return
+        
+        print("既存のsites.jsonを個別ファイルに移行中...")
+        legacy_data = self.load_json('sites.json')
+        if legacy_data and legacy_data.get('sites'):
+            for site in legacy_data['sites']:
+                site_id = site.get('id')
+                if site_id:
+                    self.save_site(site)
+            print(f"✓ {len(legacy_data['sites'])}件のサイトを移行しました")
+    
+    def save_site(self, site: Dict) -> bool:
+        """
+        個別サイト設定を保存
+        
+        Args:
+            site: サイト設定
+            
+        Returns:
+            bool: 保存が成功したかどうか
+        """
+        site_id = site.get('id')
+        if not site_id:
+            print("エラー: サイトIDが設定されていません")
+            return False
+        
+        # メタデータを追加
+        site_data = {
+            'updated_at': datetime.now().isoformat(),
+            **site
+        }
+        
+        filename = f"{site_id}.json"
+        file_path = self.sites_dir / filename
+        
+        try:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(site_data, f, ensure_ascii=False, indent=2)
+            return True
+        except Exception as e:
+            print(f"エラー: サイト設定の保存に失敗しました - {e}")
+            return False
+    
+    def load_site(self, site_id: str) -> Optional[Dict]:
+        """
+        個別サイト設定を読み込み
+        
+        Args:
+            site_id: サイトID
+            
+        Returns:
+            Dict: サイト設定データ。存在しない場合はNone
+        """
+        filename = f"{site_id}.json"
+        file_path = self.sites_dir / filename
+        
+        if not file_path.exists():
+            return None
+        
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            return data
+        except Exception as e:
+            print(f"エラー: サイト設定の読み込みに失敗しました - {e}")
+            return None
+    
+    def load_sites(self) -> Optional[Dict]:
+        """
+        全サイト設定を読み込み
+        
+        Returns:
+            Dict: サイト設定データ（後方互換性のため従来の形式を維持）
+        """
+        sites = []
+        
+        # sitesディレクトリ内の全JSONファイルを読み込み
+        for file_path in self.sites_dir.glob('*.json'):
+            # _index.jsonなどの特殊ファイルはスキップ
+            if file_path.name.startswith('_'):
+                continue
+            
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    site_data = json.load(f)
+                    # updated_atはメタデータなので除外
+                    if 'updated_at' in site_data:
+                        del site_data['updated_at']
+                    sites.append(site_data)
+            except Exception as e:
+                print(f"警告: {file_path.name}の読み込みに失敗しました - {e}")
+                continue
+        
+        return {
+            'updated_at': datetime.now().isoformat(),
+            'count': len(sites),
+            'sites': sites
+        }
+    
     def save_sites(self, sites: List[Dict]) -> bool:
         """
-        サイト設定を保存
+        サイト設定リストを保存（後方互換性のため維持）
         
         Args:
             sites: サイト設定のリスト
@@ -73,21 +187,34 @@ class Storage:
         Returns:
             bool: 保存が成功したかどうか
         """
-        data = {
-            'updated_at': datetime.now().isoformat(),
-            'count': len(sites),
-            'sites': sites
-        }
-        return self.save_json('sites.json', data)
+        success = True
+        for site in sites:
+            if not self.save_site(site):
+                success = False
+        return success
     
-    def load_sites(self) -> Optional[Dict]:
+    def delete_site(self, site_id: str) -> bool:
         """
-        サイト設定を読み込み
+        サイト設定を削除
         
+        Args:
+            site_id: サイトID
+            
         Returns:
-            Dict: サイト設定データ
+            bool: 削除が成功したかどうか
         """
-        return self.load_json('sites.json')
+        filename = f"{site_id}.json"
+        file_path = self.sites_dir / filename
+        
+        if not file_path.exists():
+            return False
+        
+        try:
+            file_path.unlink()
+            return True
+        except Exception as e:
+            print(f"エラー: サイト設定の削除に失敗しました - {e}")
+            return False
     
     def save_information_items(self, items: List[Dict]) -> bool:
         """

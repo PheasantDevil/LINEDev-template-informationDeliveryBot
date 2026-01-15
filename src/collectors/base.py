@@ -133,13 +133,7 @@ class BaseInformationCollector(ABC):
         Returns:
             bool: 記録が成功したかどうか
         """
-        sites_data = self.storage.load_sites()
-        if not sites_data:
-            return False
-        
-        sites = sites_data.get('sites', [])
-        site = next((s for s in sites if s.get('id') == site_id), None)
-        
+        site = self.storage.load_site(site_id)
         if not site:
             return False
         
@@ -152,7 +146,7 @@ class BaseInformationCollector(ABC):
         site['stats']['total_collected'] = site['stats'].get('total_collected', 0) + len(items)
         site['stats']['last_collected_count'] = len(items)
         
-        return self.storage.save_sites(sites)
+        return self.storage.save_site(site)
     
     def should_collect(self, site_config: Dict) -> bool:
         """
