@@ -22,7 +22,7 @@ data/*.json
 !data/*.example
 data/sites/*.json
 !data/sites/.gitkeep
-!data/sites/*.example
+!data/sites/*.example.json
 
 # Environment
 .env
