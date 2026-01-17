@@ -15,6 +15,7 @@ load_dotenv(project_root / '.env')
 
 from src.collectors.base import BaseInformationCollector, InformationItem
 from src.collectors.email_collector import EmailCollector
+from src.collectors.rss_reader import RSSReaderCollector
 from src.diff_detector import DiffDetector
 from src.line_notifier import LineNotifier
 from src.storage import Storage
@@ -141,9 +142,9 @@ def _create_collector(
     """
     if collector_type == 'email':
         return EmailCollector(storage)
+    elif collector_type == 'rss':
+        return RSSReaderCollector(storage)
     # 将来的に他のタイプも追加
-    # elif collector_type == 'rss':
-    #     return RSSReaderCollector(storage)
     # elif collector_type == 'scraper':
     #     return ScraperCollector(storage)
     else:
