@@ -2,9 +2,11 @@
 
 import json
 import os
+import re
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
+from urllib.parse import urlparse
 
 
 class Storage:
@@ -89,6 +91,96 @@ class Storage:
                     self.save_site(site)
             print(f"✓ {len(legacy_data['sites'])}件のサイトを移行しました")
     
+    def validate_site(self, site: Dict) -> Tuple[bool, List[str]]:
+        """
+        サイト設定をバリデーション
+        
+        Args:
+            site: サイト設定
+            
+        Returns:
+            Tuple[bool, List[str]]: (バリデーション成功, エラーメッセージのリスト)
+        """
+        errors = []
+        
+        # 必須フィールドチェック
+        if not site.get('id'):
+            errors.append('idは必須です')
+        else:
+            # idの形式チェック（英数字とアンダースコアのみ）
+            site_id = site['id']
+            if not re.match(r'^[a-zA-Z0-9_]+$', site_id):
+                errors.append(f'idは英数字とアンダースコアのみ使用できます (現在の値: {site_id})')
+        
+        if not site.get('name'):
+            errors.append('nameは必須です')
+        
+        if not site.get('url'):
+            errors.append('urlは必須です')
+        else:
+            # URL形式の検証
+            url = site['url']
+            try:
+                parsed = urlparse(url)
+                if not parsed.scheme or not parsed.netloc:
+                    errors.append(f'urlは有効なURL形式である必要があります (現在の値: {url})')
+            except Exception:
+                errors.append(f'urlは有効なURL形式である必要があります (現在の値: {url})')
+        
+        if not site.get('category'):
+            errors.append('categoryは必須です')
+        
+        collector_type = site.get('collector_type')
+        if not collector_type:
+            errors.append('collector_typeは必須です')
+        elif collector_type not in ['email', 'rss', 'scraper']:
+            errors.append(f'collector_typeは email, rss, scraper のいずれかである必要があります (現在の値: {collector_type})')
+        
+        # 収集方式別の設定チェック
+        collector_config = site.get('collector_config', {})
+        
+        if collector_type == 'email':
+            # email方式の場合、email_account_idとsubscription_emailは必須
+            if not collector_config.get('email_account_id'):
+                errors.append('email方式の場合、collector_config.email_account_idは必須です')
+            
+            if not collector_config.get('subscription_email'):
+                errors.append('email方式の場合、collector_config.subscription_emailは必須です')
+            else:
+                # メールアドレスの形式チェック（簡易的）
+                email = collector_config['subscription_email']
+                if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
+                    errors.append(f'subscription_emailは有効なメールアドレス形式である必要があります (現在の値: {email})')
+        
+        elif collector_type == 'rss':
+            # rss方式の場合、feed_urlは必須（またはurlを使用）
+            feed_url = collector_config.get('feed_url') or site.get('url', '')
+            if not feed_url:
+                errors.append('rss方式の場合、collector_config.feed_urlまたはurlが必須です')
+            else:
+                # URL形式の検証
+                try:
+                    parsed = urlparse(feed_url)
+                    if not parsed.scheme or not parsed.netloc:
+                        errors.append(f'feed_urlは有効なURL形式である必要があります (現在の値: {feed_url})')
+                except Exception:
+                    errors.append(f'feed_urlは有効なURL形式である必要があります (現在の値: {feed_url})')
+        
+        elif collector_type == 'scraper':
+            # scraper方式の場合、selectorは推奨（必須ではない）
+            if not collector_config.get('selector'):
+                errors.append('警告: scraper方式の場合、collector_config.selectorの設定を推奨します')
+        
+        # check_interval_minutesの範囲チェック
+        check_interval = collector_config.get('check_interval_minutes')
+        if check_interval is not None:
+            if not isinstance(check_interval, int):
+                errors.append('check_interval_minutesは整数である必要があります')
+            elif check_interval <= 0:
+                errors.append('check_interval_minutesは1以上の正の数である必要があります')
+        
+        return len(errors) == 0, errors
+    
     def save_site(self, site: Dict) -> bool:
         """
         個別サイト設定を保存し、sites.jsonも更新
@@ -99,6 +191,14 @@ class Storage:
         Returns:
             bool: 保存が成功したかどうか
         """
+        # バリデーションを実行
+        is_valid, errors = self.validate_site(site)
+        if not is_valid:
+            print("❌ サイト設定のバリデーションエラー:")
+            for error in errors:
+                print(f"  - {error}")
+            return False
+        
         site_id = site.get('id')
         if not site_id:
             print("エラー: サイトIDが設定されていません")
