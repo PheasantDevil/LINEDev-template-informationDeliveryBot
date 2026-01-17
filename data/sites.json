@@ -1,0 +1,29 @@
+{
+  "updated_at": "2026-01-15T23:48:35.095236",
+  "count": 1,
+  "sites": [
+    {
+      "id": "ai_weekly",
+      "name": "AI Weekly",
+      "url": "https://aiweekly.co/",
+      "category": "AI",
+      "collector_type": "email",
+      "collector_config": {
+        "email_account_id": "gmail_account_001",
+        "subscription_email": "infobot.delivery+aiweekly@gmail.com",
+        "sender_email": "newsletter@aiweekly.co",
+        "subject_pattern": "AI News Weekly|Issue #",
+        "check_interval_minutes": 15,
+        "summary_enabled": true,
+        "summary_model": "gemini-1.5-flash"
+      },
+      "enabled": false,
+      "created_at": "2025-01-12T00:00:00",
+      "last_collected_at": null,
+      "stats": {
+        "total_collected": 10,
+        "last_7_days": 0
+      }
+    }
+  ]
+}
