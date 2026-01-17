@@ -1,0 +1,19 @@
+{
+  "updated_at": "2025-01-12T00:00:00",
+  "count": 1,
+  "accounts": [
+    {
+      "id": "gmail_account_001",
+      "email": "infobot.delivery@gmail.com",
+      "imap_server": "imap.gmail.com",
+      "imap_port": 993,
+      "username": "infobot.delivery@gmail.com",
+      "password": "your_app_password_here",
+      "provider": "gmail",
+      "plus_alias_enabled": true,
+      "enabled": true,
+      "created_at": "2025-01-12T00:00:00"
+    }
+  ]
+}
+
