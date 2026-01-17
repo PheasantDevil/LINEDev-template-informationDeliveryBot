@@ -27,6 +27,16 @@ def main():
     print("情報収集・配信スクリプト開始")
     print("=" * 60)
     
+    # 環境変数の確認（デバッグ用）
+    line_token_exists = bool(os.getenv('LINE_CHANNEL_ACCESS_TOKEN'))
+    gmail_account_exists = bool(os.getenv('GMAIL_ACCOUNT'))
+    gemini_key_exists = bool(os.getenv('GEMINI_API_KEY'))
+    
+    print(f"環境変数チェック:")
+    print(f"  LINE_CHANNEL_ACCESS_TOKEN: {'✓' if line_token_exists else '✗'}")
+    print(f"  GMAIL_ACCOUNT: {'✓' if gmail_account_exists else '✗'}")
+    print(f"  GEMINI_API_KEY: {'✓' if gemini_key_exists else '✗'}")
+    
     # 初期化
     storage = Storage()
     user_manager = UserManager(storage)
@@ -38,13 +48,15 @@ def main():
     except ValueError as e:
         print(f"❌ LINE Notifierの初期化エラー: {e}")
         print("環境変数 LINE_CHANNEL_ACCESS_TOKEN が設定されているか確認してください")
-        sys.exit(1)
+        print("⚠️ LINE Notifierが初期化できませんでしたが、情報収集のみ続行します")
+        line_notifier = None
     
     # サイト設定を読み込み
     sites_data = storage.load_sites()
     if not sites_data or not sites_data.get('sites'):
-        print("警告: サイト設定が見つかりません")
-        return
+        print("⚠️ 警告: サイト設定が見つかりません")
+        print("✓ サイト設定がないため、処理を正常終了します")
+        sys.exit(0)
     
     sites = sites_data.get('sites', [])
     enabled_sites = [s for s in sites if s.get('enabled', False)]
@@ -100,8 +112,11 @@ def main():
     
     # 新着情報を配信
     if all_new_items:
-        print(f"\n--- 新着情報の配信開始 ({len(all_new_items)}件) ---")
-        _deliver_new_items(all_new_items, user_manager, line_notifier)
+        if line_notifier is None:
+            print(f"\n⚠️ 警告: 新着情報 {len(all_new_items)}件がありますが、LINE Notifierが初期化されていないため配信をスキップします")
+        else:
+            print(f"\n--- 新着情報の配信開始 ({len(all_new_items)}件) ---")
+            _deliver_new_items(all_new_items, user_manager, line_notifier)
     else:
         print("\n新着情報はありませんでした")
     
