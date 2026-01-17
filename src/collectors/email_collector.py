@@ -7,6 +7,7 @@ import re
 import sys
 from datetime import datetime
 from email.header import decode_header
+from email.message import Message
 from pathlib import Path
 from typing import Dict, List, Optional
 
@@ -101,7 +102,7 @@ class EmailCollector(BaseInformationCollector):
         subscription_email: str,
         sender_email: Optional[str] = None,
         subject_pattern: Optional[str] = None
-    ) -> List[email.message.Message]:
+    ) -> List[Message]:
         """
         メールを受信
         
@@ -112,7 +113,7 @@ class EmailCollector(BaseInformationCollector):
             subject_pattern: 件名パターン（フィルタ用）
             
         Returns:
-            List[email.message.Message]: メールメッセージのリスト
+            List[Message]: メールメッセージのリスト
         """
         try:
             # IMAP接続
@@ -185,7 +186,7 @@ class EmailCollector(BaseInformationCollector):
     
     def _parse_email_to_item(
         self,
-        msg: email.message.Message,
+        msg: Message,
         site_config: Dict
     ) -> Optional[InformationItem]:
         """
@@ -290,7 +291,7 @@ class EmailCollector(BaseInformationCollector):
         except:
             return datetime.now().isoformat()
     
-    def _get_email_body(self, msg: email.message.Message) -> str:
+    def _get_email_body(self, msg: Message) -> str:
         """
         メール本文を取得
         
