@@ -166,10 +166,10 @@ class Storage:
                 except Exception:
                     errors.append(f'feed_urlは有効なURL形式である必要があります (現在の値: {feed_url})')
         
-        elif collector_type == 'scraper':
-            # scraper方式の場合、selectorは推奨（必須ではない）
-            if not collector_config.get('selector'):
-                errors.append('警告: scraper方式の場合、collector_config.selectorの設定を推奨します')
+        # scraper方式の場合、selectorは推奨（必須ではないため警告のみ）
+        if collector_type == 'scraper' and not collector_config.get('selector'):
+            # 警告はエラーとして扱わない（将来的に警告機能を追加する場合は別途実装）
+            pass
         
         # check_interval_minutesの範囲チェック
         check_interval = collector_config.get('check_interval_minutes')
