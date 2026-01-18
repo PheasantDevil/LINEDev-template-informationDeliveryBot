@@ -2,8 +2,8 @@ name: 情報収集・配信
 
 on:
   schedule:
-    # 30分間隔で実行
-    - cron: "*/30 * * * *"
+    # 3時間間隔で実行
+    - cron: "0 */3 * * *"
   workflow_dispatch:
     # 手動実行も可能
 
