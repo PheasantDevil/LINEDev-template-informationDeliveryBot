@@ -184,7 +184,7 @@ def _deliver_new_items(new_items: List[InformationItem], user_manager: UserManag
         line_notifier: LineNotifier instance
     """
     # Group by category
-    items_by_category = {}
+    items_by_category: dict[str, list[InformationItem]] = {}
     for item in new_items:
         category = item.category
         if category not in items_by_category:
