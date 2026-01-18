@@ -57,7 +57,14 @@ def webhook():
 
     # Process events
     try:
-        events = json.loads(body)["events"]
+        # Handle empty body or invalid JSON
+        if not body or body.strip() == "":
+            print("⚠️  Empty request body received")
+            return "OK", 200
+
+        # Parse JSON
+        body_json = json.loads(body)
+        events = body_json.get("events", [])
         print(f"Number of events: {len(events)}")
 
         for i, event in enumerate(events, 1):
@@ -111,11 +118,13 @@ def handle_text_message(event: dict, notifier: LineNotifier):
     # Command processing
     if message_text == "登録":
         handle_register_command(reply_token, user_id, notifier)
-    elif message_text.startswith("購読 "):
-        category = message_text.replace("購読 ", "").strip()
+    elif message_text.startswith("購読 ") or message_text.startswith("購読　"):
+        # Support both half-width and full-width spaces
+        category = message_text.replace("購読 ", "").replace("購読　", "").strip()
         handle_subscribe_command(reply_token, user_id, category, notifier)
-    elif message_text.startswith("購読解除 "):
-        category = message_text.replace("購読解除 ", "").strip()
+    elif message_text.startswith("購読解除 ") or message_text.startswith("購読解除　"):
+        # Support both half-width and full-width spaces
+        category = message_text.replace("購読解除 ", "").replace("購読解除　", "").strip()
         handle_unsubscribe_command(reply_token, user_id, category, notifier)
     elif message_text == "サイト一覧":
         handle_sites_list_command(reply_token, notifier)

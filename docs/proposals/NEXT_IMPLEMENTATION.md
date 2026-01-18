@@ -125,7 +125,7 @@ def validate_site(self, site: Dict) -> Tuple[bool, List[str]]:
    - エラーハンドリングの確認
 
 3. **テスト結果の記録**
-   - `docs/TESTING_GUIDE.md`に結果を追記
+   - `docs/development/TESTING_GUIDE.md`に結果を追記
    - 発見した問題点を記録
    - 修正内容を記録
 

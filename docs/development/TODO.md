@@ -97,7 +97,7 @@
 #### 4.1 初期サイトの選定と追加
 
 - [x] サイト追加ツールの実装完了
-- [x] サイト追加ガイドの作成（`docs/SITE_ADDITION_GUIDE.md`）
+- [x] サイト追加ガイドの作成（`docs/site-management/SITE_ADDITION_GUIDE.md`）
 - [ ] AI カテゴリ: 2-3 サイトを選定（ユーザーが実施）
 - [ ] ドローンカテゴリ: 1-2 サイトを選定（ユーザーが実施）
 - [ ] `data/sites/`に実際のサイト情報を追加（ユーザーが実施）
@@ -213,4 +213,4 @@
 
 - GitHub Actions ワークフローの実装完了
 - サイト追加ツール（`tools/add_site.py`）の実装完了
-- サイト追加ガイド（`docs/SITE_ADDITION_GUIDE.md`）の作成完了
+- サイト追加ガイド（`docs/site-management/SITE_ADDITION_GUIDE.md`）の作成完了
