@@ -3,8 +3,6 @@
 import os
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 # Set dummy environment variables for testing
 os.environ.setdefault("LINE_CHANNEL_ACCESS_TOKEN", "dummy_token")
 os.environ.setdefault("GMAIL_ACCOUNT", "dummy@gmail.com")

@@ -398,7 +398,7 @@ class EmailCollector(BaseInformationCollector):
                         return text
 
             return None
-        except:
+        except Exception:
             return None
 
     def _generate_summary(self, body: str, collector_config: Dict) -> Optional[str]:

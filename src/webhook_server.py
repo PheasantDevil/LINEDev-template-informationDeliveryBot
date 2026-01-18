@@ -133,7 +133,7 @@ def handle_register_command(reply_token: str, user_id: str, notifier: LineNotifi
         user_id: User ID
         notifier: LineNotifier instance
     """
-    print(f"  → Processing user registration")
+    print("  → Processing user registration")
 
     success = user_manager.register_user(user_id)
     if success:
@@ -205,7 +205,7 @@ def handle_sites_list_command(reply_token: str, notifier: LineNotifier):
         reply_token: Reply token
         notifier: LineNotifier instance
     """
-    print(f"  → Displaying sites list")
+    print("  → Displaying sites list")
 
     sites_data = storage.load_sites()
     if not sites_data or not sites_data.get("sites"):
