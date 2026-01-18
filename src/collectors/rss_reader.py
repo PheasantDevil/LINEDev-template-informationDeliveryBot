@@ -5,7 +5,6 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
-from urllib.parse import urlparse
 
 import feedparser
 import requests
@@ -15,9 +14,9 @@ project_root = Path(__file__).parent.parent.parent
 if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
-from src.collectors.base import BaseInformationCollector, InformationItem
-from src.diff_detector import DiffDetector
-from src.storage import Storage
+from src.collectors.base import BaseInformationCollector, InformationItem  # noqa: E402
+from src.diff_detector import DiffDetector  # noqa: E402
+from src.storage import Storage  # noqa: E402
 
 
 class RSSReaderCollector(BaseInformationCollector):

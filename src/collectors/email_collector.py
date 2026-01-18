@@ -312,14 +312,14 @@ class EmailCollector(BaseInformationCollector):
                         if payload:
                             body = payload.decode("utf-8", errors="ignore")
                             break
-                    except:
+                    except Exception:
                         pass
                 elif content_type == "text/plain" and not body:
                     try:
                         payload = part.get_payload(decode=True)
                         if payload:
                             body = payload.decode("utf-8", errors="ignore")
-                    except:
+                    except Exception:
                         pass
         else:
             # シンプルなメール
@@ -357,7 +357,7 @@ class EmailCollector(BaseInformationCollector):
                     links.append(href)
 
             return links
-        except:
+        except Exception:
             # HTMLパースに失敗した場合は正規表現で抽出
             pattern = r'https?://[^\s<>"{}|\\^`\[\]]+'
             links = re.findall(pattern, html)
