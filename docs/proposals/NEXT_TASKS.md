@@ -195,10 +195,10 @@ python tools/add_site.py \
 
 ## 📝 関連ドキュメント
 
-- `docs/DEPLOYMENT_GUIDE.md` - デプロイ手順の詳細
-- `docs/DEPLOYMENT_CHECKLIST.md` - デプロイチェックリスト
-- `docs/SITE_ADDITION_GUIDE.md` - サイト追加ガイド
-- `docs/FUTURE_ROADMAP.md` - 今後の実装構想
+- `docs/deployment/DEPLOYMENT_GUIDE.md` - デプロイ手順の詳細
+- `docs/deployment/DEPLOYMENT_CHECKLIST.md` - デプロイチェックリスト
+- `docs/site-management/SITE_ADDITION_GUIDE.md` - サイト追加ガイド
+- `docs/proposals/FUTURE_ROADMAP.md` - 今後の実装構想
 
 ---
 
