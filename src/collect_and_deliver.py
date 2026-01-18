@@ -10,17 +10,17 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 # Load environment variables
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # noqa: E402
 
 load_dotenv(project_root / ".env")
 
-from src.collectors.base import BaseInformationCollector, InformationItem
-from src.collectors.email_collector import EmailCollector
-from src.collectors.rss_reader import RSSReaderCollector
-from src.diff_detector import DiffDetector
-from src.line_notifier import LineNotifier
-from src.storage import Storage
-from src.user_manager import UserManager
+from src.collectors.base import BaseInformationCollector, InformationItem  # noqa: E402
+from src.collectors.email_collector import EmailCollector  # noqa: E402
+from src.collectors.rss_reader import RSSReaderCollector  # noqa: E402
+from src.diff_detector import DiffDetector  # noqa: E402
+from src.line_notifier import LineNotifier  # noqa: E402
+from src.storage import Storage  # noqa: E402
+from src.user_manager import UserManager  # noqa: E402
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
     gmail_account_exists = bool(os.getenv("GMAIL_ACCOUNT"))
     gemini_key_exists = bool(os.getenv("GEMINI_API_KEY"))
 
-    print(f"Environment Variable Check:")
+    print("Environment Variable Check:")
     print(f"  LINE_CHANNEL_ACCESS_TOKEN: {'✓' if line_token_exists else '✗'}")
     print(f"  GMAIL_ACCOUNT: {'✓' if gmail_account_exists else '✗'}")
     print(f"  GEMINI_API_KEY: {'✓' if gemini_key_exists else '✗'}")
@@ -82,7 +82,7 @@ def main():
             continue
 
         if not collector.should_collect(site):
-            print(f"Skipped: Not time to collect yet")
+            print("Skipped: Not time to collect yet")
             continue
 
         # Collect information
