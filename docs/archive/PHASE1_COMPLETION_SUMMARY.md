@@ -6,19 +6,19 @@
 
 #### 段階1-1: サイト調査 ✅
 - AI、ドローン、SDGs関連の情報サイトを調査
-- `docs/SITE_RESEARCH.md`を作成
+- `docs/site-management/SITE_RESEARCH.md`を作成
 - AI Weeklyの設定詳細を記録
 
 #### 段階1-2: サイト設定の追加と最適化 ✅
 - `ai_weekly.json`の設定を確認・更新
   - `enabled: true`に変更
   - `check_interval_minutes`を60に変更（週刊配信に適切）
-- `docs/SITE_ADDITION_SUMMARY.md`を作成
-- `docs/SITE_CONFIGURATION_STATUS.md`を作成
+- `docs/site-management/SITE_ADDITION_SUMMARY.md`を作成
+- `docs/site-management/SITE_CONFIGURATION_STATUS.md`を作成
 
 #### 段階1-3: 動作確認の準備 ✅
 - メールサンプル分析を実施
-- `docs/EMAIL_SAMPLE_ANALYSIS.md`を作成
+- `docs/site-management/EMAIL_SAMPLE_ANALYSIS.md`を作成
 - EmailCollectorの動作確認ポイントを整理
 
 ---
@@ -36,10 +36,10 @@
 ## 📝 作成・更新したファイル
 
 ### ドキュメント
-- `docs/SITE_RESEARCH.md` - サイト調査結果
-- `docs/SITE_ADDITION_SUMMARY.md` - サイト追加サマリー
-- `docs/SITE_CONFIGURATION_STATUS.md` - サイト設定状況
-- `docs/EMAIL_SAMPLE_ANALYSIS.md` - メールサンプル分析
+- `docs/site-management/SITE_RESEARCH.md` - サイト調査結果
+- `docs/site-management/SITE_ADDITION_SUMMARY.md` - サイト追加サマリー
+- `docs/site-management/SITE_CONFIGURATION_STATUS.md` - サイト設定状況
+- `docs/site-management/EMAIL_SAMPLE_ANALYSIS.md` - メールサンプル分析
 
 ### 設定ファイル
 - `data/sites/ai_weekly.json` - AI Weekly設定（有効化済み）

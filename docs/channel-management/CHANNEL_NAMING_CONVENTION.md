@@ -183,7 +183,7 @@ python tools/manage_channel.py add \
 
 ## 🔗 関連ドキュメント
 
-- `docs/LINE_CHANNEL_AUTO_MANAGEMENT_PROPOSAL.md` - チャネル自動管理の提案
+- `docs/channel-management/LINE_CHANNEL_AUTO_MANAGEMENT_PROPOSAL.md` - チャネル自動管理の提案
 - `.github/ISSUE_TEMPLATE/channel-creation.md` - チャネル作成Issueテンプレート
 - `.github/workflows/create-channel-creation-issues.yml` - Issue自動生成ワークフロー
 

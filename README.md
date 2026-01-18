@@ -128,16 +128,18 @@ pip install -r requirements.txt
 
 ### 5. Webhook サーバーのデプロイ
 
-詳細は `docs/SETUP_GUIDE.md` を参照してください。
+詳細は `docs/development/SETUP_GUIDE.md` を参照してください。
 
 ## 📚 ドキュメント
 
-- `docs/SETUP_GUIDE.md`: **セットアップガイド（手動設定手順）** ⭐
-- `docs/TESTING_GUIDE.md`: **テストガイド（連携テスト手順）** ⭐
-- `docs/TODO.md`: **残りのタスク一覧** ⭐
-- `docs/README.md`: ドキュメント管理方法
-- `docs/YYYYMMDD/`: 要件定義・技術検証の記録
-- `docs/sites/`: 情報発信サイトの紹介ページ
+主要なドキュメントは `docs/README.md` に索引があります。
+
+- **セットアップ**: `docs/development/SETUP_GUIDE.md` ⭐
+- **テスト**: `docs/development/TESTING_GUIDE.md` ⭐
+- **タスク管理**: `docs/development/TODO.md` ⭐
+- **デプロイ**: `docs/deployment/DEPLOYMENT_STEPS.md` ⭐
+- **サイト追加**: `docs/site-management/SITE_ADDITION_GUIDE.md` ⭐
+- **ドキュメント索引**: `docs/README.md`
 
 ## 🛠️ 開発
 

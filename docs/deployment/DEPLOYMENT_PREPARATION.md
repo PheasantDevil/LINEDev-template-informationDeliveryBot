@@ -252,9 +252,9 @@ Render.com ダッシュボードで：
 
 ## 📚 関連ドキュメント
 
-- `docs/DEPLOYMENT_GUIDE.md` - 詳細なデプロイ手順
-- `docs/DEPLOYMENT_CHECKLIST.md` - デプロイチェックリスト
-- `docs/TESTING_GUIDE.md` - テストガイド
+- `docs/deployment/DEPLOYMENT_GUIDE.md` - 詳細なデプロイ手順
+- `docs/deployment/DEPLOYMENT_CHECKLIST.md` - デプロイチェックリスト
+- `docs/development/TESTING_GUIDE.md` - テストガイド
 
 ---
 

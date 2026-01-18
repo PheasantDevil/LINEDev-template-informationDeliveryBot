@@ -30,14 +30,14 @@ Webhookサーバーデプロイ準備、チャネル自動管理機能、サイ�
 ## 📝 変更ファイル
 
 ### ドキュメント
-- `docs/DEPLOYMENT_PREPARATION.md` - デプロイ準備ガイド
-- `docs/DEPLOYMENT_STEPS.md` - 詳細なデプロイ手順
-- `docs/WEBHOOK_VERIFICATION_TROUBLESHOOTING.md` - Webhook検証エラー対応
-- `docs/ENV_VAR_SETUP_RENDER.md` - Render.com環境変数設定
-- `docs/CHANNEL_NAMING_CONVENTION.md` - 命名規則
-- `docs/LINE_CHANNEL_AUTO_MANAGEMENT_PROPOSAL.md` - チャネル自動管理提案
-- `docs/SITE_BASED_SUBSCRIPTION_PROPOSAL.md` - サイト単位購読提案
-- `docs/NEXT_IMPLEMENTATION_OPTIONS.md` - 次の実装オプション
+- `docs/deployment/DEPLOYMENT_PREPARATION.md` - デプロイ準備ガイド
+- `docs/deployment/DEPLOYMENT_STEPS.md` - 詳細なデプロイ手順
+- `docs/deployment/WEBHOOK_VERIFICATION_TROUBLESHOOTING.md` - Webhook検証エラー対応
+- `docs/deployment/ENV_VAR_SETUP_RENDER.md` - Render.com環境変数設定
+- `docs/channel-management/CHANNEL_NAMING_CONVENTION.md` - 命名規則
+- `docs/channel-management/LINE_CHANNEL_AUTO_MANAGEMENT_PROPOSAL.md` - チャネル自動管理提案
+- `docs/site-management/SITE_BASED_SUBSCRIPTION_PROPOSAL.md` - サイト単位購読提案
+- `docs/proposals/NEXT_IMPLEMENTATION_OPTIONS.md` - 次の実装オプション
 
 ### ソースコード
 - `src/webhook_server.py` - エラーハンドリング改善、全角スペース対応
@@ -73,7 +73,7 @@ Webhookサーバーデプロイ準備、チャネル自動管理機能、サイ�
 
 ## 📚 関連ドキュメント
 
-- デプロイ手順: `docs/DEPLOYMENT_STEPS.md`
-- チャネル命名規則: `docs/CHANNEL_NAMING_CONVENTION.md`
-- 次の実装オプション: `docs/NEXT_IMPLEMENTATION_OPTIONS.md`
+- デプロイ手順: `docs/deployment/DEPLOYMENT_STEPS.md`
+- チャネル命名規則: `docs/channel-management/CHANNEL_NAMING_CONVENTION.md`
+- 次の実装オプション: `docs/proposals/NEXT_IMPLEMENTATION_OPTIONS.md`
 
