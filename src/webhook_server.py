@@ -57,7 +57,14 @@ def webhook():
 
     # Process events
     try:
-        events = json.loads(body)["events"]
+        # Handle empty body or invalid JSON
+        if not body or body.strip() == "":
+            print("⚠️  Empty request body received")
+            return "OK", 200
+
+        # Parse JSON
+        body_json = json.loads(body)
+        events = body_json.get("events", [])
         print(f"Number of events: {len(events)}")
 
         for i, event in enumerate(events, 1):
