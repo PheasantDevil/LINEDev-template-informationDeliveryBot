@@ -1,0 +1,42 @@
+name: チャネル作成タスクの定期生成
+
+on:
+  schedule:
+    # 毎週月曜日 09:00 (JST) に実行
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+    # 手動実行も可能
+    inputs:
+      category_filter:
+        description: 'カテゴリでフィルタリング（オプション）'
+        required: false
+        type: choice
+        options:
+          - 'all'
+          - 'AI'
+          - 'ドローン'
+          - 'SDGs'
+
+jobs:
+  create-issues:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python環境をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 依存関係をインストール
+        run: |
+          pip install requests
+
+      - name: チャネル作成Issueを生成
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python .github/scripts/create_channel_issues.py
+
