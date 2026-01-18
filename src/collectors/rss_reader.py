@@ -94,7 +94,7 @@ class RSSReaderCollector(BaseInformationCollector):
                         return None
 
                 if not feed.entries:
-                    print(f"  警告: フィードにエントリがありません")
+                    print("  警告: フィードにエントリがありません")
                     return None
 
                 print(f"  ✓ フィードを取得しました: {len(feed.entries)}件のエントリ")
@@ -105,7 +105,7 @@ class RSSReaderCollector(BaseInformationCollector):
                 if attempt < self.max_retries - 1:
                     time.sleep(2**attempt)  # 指数バックオフ
                 else:
-                    print(f"  ❌ タイムアウト: 最大試行回数に達しました")
+                    print("  ❌ タイムアウト: 最大試行回数に達しました")
                     return None
 
             except requests.exceptions.RequestException as e:
@@ -113,7 +113,7 @@ class RSSReaderCollector(BaseInformationCollector):
                 if attempt < self.max_retries - 1:
                     time.sleep(2**attempt)  # 指数バックオフ
                 else:
-                    print(f"  ❌ ネットワークエラー: 最大試行回数に達しました")
+                    print("  ❌ ネットワークエラー: 最大試行回数に達しました")
                     return None
 
             except Exception as e:

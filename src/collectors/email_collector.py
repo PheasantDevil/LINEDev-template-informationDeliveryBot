@@ -281,7 +281,7 @@ class EmailCollector(BaseInformationCollector):
 
             dt = parsedate_to_datetime(date_str)
             return dt.isoformat()
-        except:
+        except Exception:
             return datetime.now().isoformat()
 
     def _get_email_body(self, msg: Message) -> str:
@@ -327,7 +327,7 @@ class EmailCollector(BaseInformationCollector):
                 payload = msg.get_payload(decode=True)
                 if payload:
                     body = payload.decode("utf-8", errors="ignore")
-            except:
+            except Exception:
                 pass
 
         return body
