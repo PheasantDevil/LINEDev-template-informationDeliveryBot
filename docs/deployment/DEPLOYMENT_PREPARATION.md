@@ -1,8 +1,8 @@
-# Webhookサーバーデプロイ準備ガイド
+# Webhook サーバーデプロイ準備ガイド
 
 ## 📋 概要
 
-このドキュメントは、Webhookサーバーを本番環境（Render.com）にデプロイする前の準備手順をまとめたものです。
+このドキュメントは、Webhook サーバーを本番環境（Render.com）にデプロイする前の準備手順をまとめたものです。
 
 ---
 
@@ -12,21 +12,21 @@
 
 - [x] `LINE_CHANNEL_ACCESS_TOKEN` - LINE Channel Access Token（必須）
 - [x] `LINE_CHANNEL_SECRET` - LINE Channel Secret（必須）
-- [ ] `GMAIL_ACCOUNT` - メール収集用Gmailアカウント（オプション、動作確認済み）
-- [ ] `GMAIL_APP_PASSWORD` - Gmailアプリパスワード（オプション、動作確認済み）
-- [ ] `GEMINI_API_KEY` - Gemini APIキー（オプション、要約機能用、動作確認済み）
+- [ ] `GMAIL_ACCOUNT` - メール収集用 Gmail アカウント（オプション、動作確認済み）
+- [ ] `GMAIL_APP_PASSWORD` - Gmail アプリパスワード（オプション、動作確認済み）
+- [ ] `GEMINI_API_KEY` - Gemini API キー（オプション、要約機能用、動作確認済み）
 
 ### ファイル確認
 
-- [x] `Procfile` - Webサーバーの起動コマンド定義
-- [x] `render.yaml` - Render.com設定ファイル
-- [x] `requirements.txt` - Python依存関係
-- [x] `src/webhook_server.py` - Webhookサーバー実装
+- [x] `Procfile` - Web サーバーの起動コマンド定義
+- [x] `render.yaml` - Render.com 設定ファイル
+- [x] `requirements.txt` - Python 依存関係
+- [x] `src/webhook_server.py` - Webhook サーバー実装
 - [x] `src/collect_and_deliver.py` - 情報収集・配信スクリプト
 
 ### 設定ファイル確認
 
-- [x] `data/sites/ai_weekly.json` - AI Weekly設定（有効化済み）
+- [x] `data/sites/ai_weekly.json` - AI Weekly 設定（有効化済み）
 - [x] `data/email_accounts.json` - メールアカウント設定
 
 ---
@@ -40,9 +40,10 @@ web: gunicorn src.webhook_server:app --bind 0.0.0.0:$PORT
 ```
 
 **確認事項**:
+
 - [x] `gunicorn`が`requirements.txt`に含まれている
 - [x] `src.webhook_server:app`が正しいモジュールパス
-- [x] `$PORT`環境変数を使用（Render.comが自動設定）
+- [x] `$PORT`環境変数を使用（Render.com が自動設定）
 
 ### render.yaml
 
@@ -58,6 +59,7 @@ services:
 ```
 
 **確認事項**:
+
 - [x] `plan: free`（無料プラン）
 - [x] `healthCheckPath: /health`（ヘルスチェックエンドポイント）
 - [x] ビルドコマンドと起動コマンドが正しい
@@ -65,89 +67,98 @@ services:
 ### requirements.txt
 
 **確認事項**:
-- [x] `flask>=3.0.0` - Webフレームワーク
-- [x] `gunicorn>=21.2.0` - WSGIサーバー
+
+- [x] `flask>=3.0.0` - Web フレームワーク
+- [x] `gunicorn>=21.2.0` - WSGI サーバー
 - [x] その他の依存関係が全て含まれている
 
 ---
 
-## 📝 デプロイ手順（段階2-1, 2-2）
+## 📝 デプロイ手順（段階 2-1, 2-2）
 
-### 段階2-1: Render.comでのデプロイ準備
+### 段階 2-1: Render.com でのデプロイ準備
 
-1. **Render.comアカウントの作成**
+1. **Render.com アカウントの作成**
+
    - https://render.com にアクセス
-   - GitHubアカウントでサインアップ
+   - GitHub アカウントでサインアップ
 
-2. **GitHubリポジトリ連携**
+2. **GitHub リポジトリ連携**
+
    - Dashboard → "New +" → "Web Service"
-   - GitHubリポジトリを選択: `LINEDev-template-informationDeliveryBot`
+   - GitHub リポジトリを選択: `LINEDev-template-informationDeliveryBot`
    - ブランチ: `main`（推奨）
 
 3. **環境変数の設定**
-   
-   Render.comダッシュボードで以下を設定：
-   
-   | キー | 値 | 必須 | 説明 |
-   |-----|-----|------|------|
-   | `LINE_CHANNEL_ACCESS_TOKEN` | `(LINE Developersから取得)` | ✅ | LINE Channel Access Token |
-   | `LINE_CHANNEL_SECRET` | `(LINE Developersから取得)` | ✅ | LINE Channel Secret |
-   | `PORT` | `10000` | ❌ | ポート番号（Render.comが自動設定） |
-   | `GMAIL_ACCOUNT` | `infobot.delivery@gmail.com` | ❌ | メール収集用Gmailアカウント |
-   | `GMAIL_APP_PASSWORD` | `(設定済み)` | ❌ | Gmailアプリパスワード |
-   | `GEMINI_API_KEY` | `(設定済み)` | ❌ | Gemini APIキー |
+
+   Render.com ダッシュボードで以下を設定：
+
+   | キー                        | 値                           | 必須 | 説明                                |
+   | --------------------------- | ---------------------------- | ---- | ----------------------------------- |
+   | `LINE_CHANNEL_ACCESS_TOKEN` | `(LINE Developersから取得)`  | ✅   | LINE Channel Access Token           |
+   | `LINE_CHANNEL_SECRET`       | `(LINE Developersから取得)`  | ✅   | LINE Channel Secret                 |
+   | `PORT`                      | `10000`                      | ❌   | ポート番号（Render.com が自動設定） |
+   | `GMAIL_ACCOUNT`             | `infobot.delivery@gmail.com` | ❌   | メール収集用 Gmail アカウント       |
+   | `GMAIL_APP_PASSWORD`        | `(設定済み)`                 | ❌   | Gmail アプリパスワード              |
+   | `GEMINI_API_KEY`            | `(設定済み)`                 | ❌   | Gemini API キー                     |
 
    **注意**: `LINE_CHANNEL_ACCESS_TOKEN`と`LINE_CHANNEL_SECRET`は必須です。
 
-### 段階2-2: デプロイの実行
+### 段階 2-2: デプロイの実行
 
-1. **Webサービスの作成**
+1. **Web サービスの作成**
+
    - 設定を確認して「Create Web Service」をクリック
    - 初回デプロイが自動的に開始される
 
 2. **デプロイの確認**
+
    - ビルドログを確認
    - エラーがないことを確認
-   - デプロイ完了を待つ（約2-5分）
+   - デプロイ完了を待つ（約 2-5 分）
 
 3. **ヘルスチェックの確認**
+
    ```bash
    curl https://your-service-url.onrender.com/health
    # 期待される結果: OK
    ```
-   
+
    **期待されるレスポンス**:
+
    ```
    OK
    ```
 
-4. **サービスURLの確認**
-   - デプロイ後に表示されるサービスURLをメモ
+4. **サービス URL の確認**
+   - デプロイ後に表示されるサービス URL をメモ
    - 例: `https://information-delivery-bot-webhook.onrender.com`
-   - このURLをLINE Developersで設定する
+   - この URL を LINE Developers で設定する
 
 ---
 
-## 🔗 LINE Developers設定（段階2-3）
+## 🔗 LINE Developers 設定（段階 2-3）
 
-### Webhook URLの設定
+### Webhook URL の設定
 
-1. **LINE Developers Consoleにアクセス**
+1. **LINE Developers Console にアクセス**
+
    - https://developers.line.biz/console/
    - チャンネルを選択
 
-2. **Webhook設定**
+2. **Webhook 設定**
+
    - "Messaging API" → "Webhook settings"
    - Webhook URL: `https://your-service-url.onrender.com/webhook`
    - 「Verify」ボタンで検証
 
-3. **Webhookの有効化**
-   - "Use webhook"をON
-   - "Auto-reply messages"をOFF（Botの応答を制御するため）
+3. **Webhook の有効化**
+   - "Use webhook"を ON
+   - "Auto-reply messages"を OFF（Bot の応答を制御するため）
 
 ---
 
-## 🧪 テスト手順（段階2-4）
+## 🧪 テスト手順（段階 2-4）
 
 ### 1. ヘルスチェックテスト
 
@@ -157,12 +168,14 @@ curl https://your-service-url.onrender.com/health
 
 ### 2. ユーザー登録テスト
 
-LINEアプリでBotにメッセージを送信：
+LINE アプリで Bot にメッセージを送信：
+
 ```
 登録
 ```
 
 **期待される応答**:
+
 ```
 登録が完了しました！
 
@@ -180,6 +193,7 @@ LINEアプリでBotにメッセージを送信：
 ```
 
 **期待される応答**:
+
 ```
 AIカテゴリを購読しました。
 ```
@@ -191,6 +205,7 @@ AIカテゴリを購読しました。
 ```
 
 **期待される応答**:
+
 ```
 利用可能なサイト:
 
@@ -202,31 +217,35 @@ AIカテゴリを購読しました。
 
 ### 5. ログ確認
 
-Render.comダッシュボードで：
+Render.com ダッシュボードで：
+
 - "Logs"タブを開く
 - エラーログがないことを確認
-- Webhook受信ログを確認
+- Webhook 受信ログを確認
 
 ---
 
 ## ⚠️ 注意事項
 
 1. **無料プランの制限**
-   - Render.com無料プランは15分間の非アクティブ後にスリープする
-   - 初回リクエスト時にウェイクアップが必要（約30秒）
+
+   - Render.com 無料プランは 15 分間の非アクティブ後にスリープする
+   - 初回リクエスト時にウェイクアップが必要（約 30 秒）
    - 定期的なアクセスが必要な場合は有料プランを検討
 
 2. **環境変数の管理**
+
    - 機密情報（トークン、パスワード）は環境変数で管理
    - `render.yaml`の`sync: false`設定で、環境変数がコードに含まれないようにする
 
 3. **デプロイ後の動作確認**
+
    - デプロイ後、必ずヘルスチェックエンドポイントで確認
-   - LINE DevelopersでWebhook検証を実行
-   - 実際にLINE Botにメッセージを送信して動作確認
+   - LINE Developers で Webhook 検証を実行
+   - 実際に LINE Bot にメッセージを送信して動作確認
 
 4. **ログ監視**
-   - Render.comのログ画面でエラーを定期的に確認
+   - Render.com のログ画面でエラーを定期的に確認
    - 問題があれば早期に対応
 
 ---
@@ -240,4 +259,3 @@ Render.comダッシュボードで：
 ---
 
 **最終更新**: 2025-01-18
-

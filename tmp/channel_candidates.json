@@ -1,0 +1,11 @@
+{
+  "candidates": [
+    {
+      "site_id": "ai_weekly",
+      "channel_id": "channel_ai_weekly",
+      "priority": "medium",
+      "site_name": "AI Weekly",
+      "category": "AI"
+    }
+  ]
+}
