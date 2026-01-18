@@ -1,7 +1,6 @@
-"""データの永続化を管理するモジュール"""
+"""Data persistence management module"""
 
 import json
-import os
 import re
 from datetime import datetime
 from pathlib import Path
@@ -10,466 +9,438 @@ from urllib.parse import urlparse
 
 
 class Storage:
-    """データの保存・読み込みを管理するクラス"""
-    
+    """Class for managing data persistence"""
+
     def __init__(self, data_dir: str = "data"):
         """
-        初期化
-        
+        Initialize
+
         Args:
-            data_dir: データディレクトリのパス
+            data_dir: Path to data directory
         """
         self.data_dir = Path(data_dir)
         self.data_dir.mkdir(parents=True, exist_ok=True)
-        self.sites_dir = self.data_dir / 'sites'
+        self.sites_dir = self.data_dir / "sites"
         self.sites_dir.mkdir(parents=True, exist_ok=True)
-        
-        # 既存のsites.jsonを移行（初回のみ）
+
+        # Migrate existing sites.json to individual files (first time only)
         self._migrate_legacy_sites()
-    
+
     def save_json(self, filename: str, data: Dict) -> bool:
         """
-        JSONファイルにデータを保存
-        
+        Save data to JSON file
+
         Args:
-            filename: ファイル名
-            data: 保存するデータ
-            
+            filename: File name
+            data: Data to save
+
         Returns:
-            bool: 保存が成功したかどうか
+            bool: True if save succeeded, False otherwise
         """
         try:
             file_path = self.data_dir / filename
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
-            print(f"✓ データを保存しました: {file_path}")
+            print(f"✓ Data saved: {file_path}")
             return True
         except Exception as e:
-            print(f"エラー: データの保存に失敗しました - {e}")
+            print(f"Error: Failed to save data - {e}")
             return False
-    
+
     def load_json(self, filename: str) -> Optional[Dict]:
         """
-        JSONファイルからデータを読み込み
-        
+        Load data from JSON file
+
         Args:
-            filename: ファイル名
-            
+            filename: File name
+
         Returns:
-            Dict: 読み込んだデータ。ファイルが存在しない場合はNone
+            Dict: Loaded data, or None if file doesn't exist
         """
         file_path = self.data_dir / filename
         if not file_path.exists():
             return None
-        
+
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             return data
         except Exception as e:
-            print(f"エラー: データの読み込みに失敗しました - {e}")
+            print(f"Error: Failed to load data - {e}")
             return None
-    
+
     def _migrate_legacy_sites(self):
         """
-        既存のsites.jsonを個別ファイルに移行（初回のみ）
+        Migrate existing sites.json to individual files (first time only)
         """
-        legacy_file = self.data_dir / 'sites.json'
+        legacy_file = self.data_dir / "sites.json"
         if not legacy_file.exists():
             return
-        
-        # 既にsitesディレクトリにファイルがある場合は移行済み
-        if any(self.sites_dir.glob('*.json')):
+
+        # Skip if files already exist in sites directory
+        if any(self.sites_dir.glob("*.json")):
             return
-        
-        print("既存のsites.jsonを個別ファイルに移行中...")
-        legacy_data = self.load_json('sites.json')
-        if legacy_data and legacy_data.get('sites'):
-            for site in legacy_data['sites']:
-                site_id = site.get('id')
+
+        print("Migrating existing sites.json to individual files...")
+        legacy_data = self.load_json("sites.json")
+        if legacy_data and legacy_data.get("sites"):
+            for site in legacy_data["sites"]:
+                site_id = site.get("id")
                 if site_id:
                     self.save_site(site)
-            print(f"✓ {len(legacy_data['sites'])}件のサイトを移行しました")
-    
+            print(f"✓ Migrated {len(legacy_data['sites'])} sites")
+
     def validate_site(self, site: Dict) -> Tuple[bool, List[str]]:
         """
-        サイト設定をバリデーション
-        
+        Validate site configuration
+
         Args:
-            site: サイト設定
-            
+            site: Site configuration
+
         Returns:
-            Tuple[bool, List[str]]: (バリデーション成功, エラーメッセージのリスト)
+            Tuple[bool, List[str]]: (validation success, list of error messages)
         """
         errors = []
-        
-        # 必須フィールドチェック
-        if not site.get('id'):
-            errors.append('idは必須です')
+
+        # Required field checks
+        if not site.get("id"):
+            errors.append("id is required")
         else:
-            # idの形式チェック（英数字とアンダースコアのみ）
-            site_id = site['id']
-            if not re.match(r'^[a-zA-Z0-9_]+$', site_id):
-                errors.append(f'idは英数字とアンダースコアのみ使用できます (現在の値: {site_id})')
-        
-        if not site.get('name'):
-            errors.append('nameは必須です')
-        
-        if not site.get('url'):
-            errors.append('urlは必須です')
+            # ID format check (alphanumeric and underscore only)
+            site_id = site["id"]
+            if not re.match(r"^[a-zA-Z0-9_]+$", site_id):
+                errors.append(f"id can only contain alphanumeric characters and underscores (current value: {site_id})")
+
+        if not site.get("name"):
+            errors.append("name is required")
+
+        if not site.get("url"):
+            errors.append("url is required")
         else:
-            # URL形式の検証
-            url = site['url']
+            # URL format validation
+            url = site["url"]
             try:
                 parsed = urlparse(url)
                 if not parsed.scheme or not parsed.netloc:
-                    errors.append(f'urlは有効なURL形式である必要があります (現在の値: {url})')
+                    errors.append(f"url must be a valid URL format (current value: {url})")
             except Exception:
-                errors.append(f'urlは有効なURL形式である必要があります (現在の値: {url})')
-        
-        if not site.get('category'):
-            errors.append('categoryは必須です')
-        
-        collector_type = site.get('collector_type')
+                errors.append(f"url must be a valid URL format (current value: {url})")
+
+        if not site.get("category"):
+            errors.append("category is required")
+
+        collector_type = site.get("collector_type")
         if not collector_type:
-            errors.append('collector_typeは必須です')
-        elif collector_type not in ['email', 'rss', 'scraper']:
-            errors.append(f'collector_typeは email, rss, scraper のいずれかである必要があります (現在の値: {collector_type})')
-        
-        # 収集方式別の設定チェック
-        collector_config = site.get('collector_config', {})
-        
-        if collector_type == 'email':
-            # email方式の場合、email_account_idとsubscription_emailは必須
-            if not collector_config.get('email_account_id'):
-                errors.append('email方式の場合、collector_config.email_account_idは必須です')
-            
-            if not collector_config.get('subscription_email'):
-                errors.append('email方式の場合、collector_config.subscription_emailは必須です')
+            errors.append("collector_type is required")
+        elif collector_type not in ["email", "rss", "scraper"]:
+            errors.append(f"collector_type must be one of: email, rss, scraper (current value: {collector_type})")
+
+        # Collector-specific configuration checks
+        collector_config = site.get("collector_config", {})
+
+        if collector_type == "email":
+            # For email type, email_account_id and subscription_email are required
+            if not collector_config.get("email_account_id"):
+                errors.append("collector_config.email_account_id is required for email type")
+
+            if not collector_config.get("subscription_email"):
+                errors.append("collector_config.subscription_email is required for email type")
             else:
-                # メールアドレスの形式チェック（簡易的）
-                email = collector_config['subscription_email']
-                if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
-                    errors.append(f'subscription_emailは有効なメールアドレス形式である必要があります (現在の値: {email})')
-        
-        elif collector_type == 'rss':
-            # rss方式の場合、feed_urlは必須（またはurlを使用）
-            feed_url = collector_config.get('feed_url') or site.get('url', '')
+                # Email address format check (simple)
+                email = collector_config["subscription_email"]
+                if not re.match(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", email):
+                    errors.append(f"subscription_email must be a valid email address format (current value: {email})")
+
+        elif collector_type == "rss":
+            # For rss type, feed_url is required (or use url)
+            feed_url = collector_config.get("feed_url") or site.get("url", "")
             if not feed_url:
-                errors.append('rss方式の場合、collector_config.feed_urlまたはurlが必須です')
+                errors.append("collector_config.feed_url or url is required for rss type")
             else:
-                # URL形式の検証
+                # URL format validation
                 try:
                     parsed = urlparse(feed_url)
                     if not parsed.scheme or not parsed.netloc:
-                        errors.append(f'feed_urlは有効なURL形式である必要があります (現在の値: {feed_url})')
+                        errors.append(f"feed_url must be a valid URL format (current value: {feed_url})")
                 except Exception:
-                    errors.append(f'feed_urlは有効なURL形式である必要があります (現在の値: {feed_url})')
-        
-        # scraper方式の場合、selectorは推奨（必須ではないため警告のみ）
-        if collector_type == 'scraper' and not collector_config.get('selector'):
-            # 警告はエラーとして扱わない（将来的に警告機能を追加する場合は別途実装）
+                    errors.append(f"feed_url must be a valid URL format (current value: {feed_url})")
+
+        # For scraper type, selector is recommended (not required, warning only)
+        if collector_type == "scraper" and not collector_config.get("selector"):
+            # Warnings are not treated as errors (implement warning functionality separately in the future)
             pass
-        
-        # check_interval_minutesの範囲チェック
-        check_interval = collector_config.get('check_interval_minutes')
+
+        # Range check for check_interval_minutes
+        check_interval = collector_config.get("check_interval_minutes")
         if check_interval is not None:
             if not isinstance(check_interval, int):
-                errors.append('check_interval_minutesは整数である必要があります')
+                errors.append("check_interval_minutes must be an integer")
             elif check_interval <= 0:
-                errors.append('check_interval_minutesは1以上の正の数である必要があります')
-        
+                errors.append("check_interval_minutes must be a positive integer >= 1")
+
         return len(errors) == 0, errors
-    
+
     def save_site(self, site: Dict) -> bool:
         """
-        個別サイト設定を保存し、sites.jsonも更新
-        
+        Save individual site configuration and update sites.json
+
         Args:
-            site: サイト設定
-            
+            site: Site configuration
+
         Returns:
-            bool: 保存が成功したかどうか
+            bool: True if save succeeded, False otherwise
         """
-        # バリデーションを実行
+        # Run validation
         is_valid, errors = self.validate_site(site)
         if not is_valid:
-            print("❌ サイト設定のバリデーションエラー:")
+            print("❌ Site configuration validation errors:")
             for error in errors:
                 print(f"  - {error}")
             return False
-        
-        site_id = site.get('id')
+
+        site_id = site.get("id")
         if not site_id:
-            print("エラー: サイトIDが設定されていません")
+            print("Error: Site ID is not set")
             return False
-        
-        # メタデータを追加
-        site_data = {
-            'updated_at': datetime.now().isoformat(),
-            **site
-        }
-        
+
+        # Add metadata
+        site_data = {"updated_at": datetime.now().isoformat(), **site}
+
         filename = f"{site_id}.json"
         file_path = self.sites_dir / filename
-        
+
         try:
-            # 個別ファイルを保存
-            with open(file_path, 'w', encoding='utf-8') as f:
+            # Save individual file
+            with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(site_data, f, ensure_ascii=False, indent=2)
-            
-            # sites.jsonも更新（集約ファイル）
+
+            # Update sites.json (aggregated file)
             self._update_sites_json()
-            
+
             return True
         except Exception as e:
-            print(f"エラー: サイト設定の保存に失敗しました - {e}")
+            print(f"Error: Failed to save site configuration - {e}")
             return False
-    
+
     def _update_sites_json(self):
         """
-        data/sites/内の個別ファイルを集約してsites.jsonを更新
+        Aggregate individual files in data/sites/ and update sites.json
         """
         sites = []
-        
-        # sitesディレクトリ内の全JSONファイルを読み込み
-        for file_path in self.sites_dir.glob('*.json'):
-            # _index.jsonやexampleファイルはスキップ
-            if file_path.name.startswith('_') or file_path.name.endswith('.example.json'):
+
+        # Load all JSON files in sites directory
+        for file_path in self.sites_dir.glob("*.json"):
+            # Skip _index.json and example files
+            if file_path.name.startswith("_") or file_path.name.endswith(".example.json"):
                 continue
-            
+
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, "r", encoding="utf-8") as f:
                     site_data = json.load(f)
-                    # updated_atはメタデータなので除外
-                    if 'updated_at' in site_data:
-                        del site_data['updated_at']
+                    # Exclude updated_at as it's metadata
+                    if "updated_at" in site_data:
+                        del site_data["updated_at"]
                     sites.append(site_data)
             except Exception as e:
-                print(f"警告: {file_path.name}の読み込みに失敗しました - {e}")
+                print(f"Warning: Failed to load {file_path.name} - {e}")
                 continue
-        
-        # sites.jsonを更新
-        data = {
-            'updated_at': datetime.now().isoformat(),
-            'count': len(sites),
-            'sites': sites
-        }
-        self.save_json('sites.json', data)
-    
+
+        # Update sites.json
+        data = {"updated_at": datetime.now().isoformat(), "count": len(sites), "sites": sites}
+        self.save_json("sites.json", data)
+
     def load_site(self, site_id: str) -> Optional[Dict]:
         """
-        個別サイト設定を読み込み
-        
+        Load individual site configuration
+
         Args:
-            site_id: サイトID
-            
+            site_id: Site ID
+
         Returns:
-            Dict: サイト設定データ。存在しない場合はNone
+            Dict: Site configuration data, or None if doesn't exist
         """
         filename = f"{site_id}.json"
         file_path = self.sites_dir / filename
-        
+
         if not file_path.exists():
             return None
-        
+
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
             return data
         except Exception as e:
-            print(f"エラー: サイト設定の読み込みに失敗しました - {e}")
+            print(f"Error: Failed to load site configuration - {e}")
             return None
-    
+
     def load_sites(self) -> Optional[Dict]:
         """
-        全サイト設定を読み込み
-        
+        Load all site configurations
+
         Returns:
-            Dict: サイト設定データ（後方互換性のため従来の形式を維持）
+            Dict: Site configuration data (maintains backward compatibility with legacy format)
         """
-        # sites.jsonが存在する場合は優先的に読み込む
-        sites_json_path = self.data_dir / 'sites.json'
+        # Prefer sites.json if it exists
+        sites_json_path = self.data_dir / "sites.json"
         if sites_json_path.exists():
-            data = self.load_json('sites.json')
+            data = self.load_json("sites.json")
             if data:
                 return data
-        
-        # sites.jsonが存在しない場合は個別ファイルから集約
+
+        # Aggregate from individual files if sites.json doesn't exist
         sites = []
-        
-        # sitesディレクトリ内の全JSONファイルを読み込み
-        for file_path in self.sites_dir.glob('*.json'):
-            # _index.jsonやexampleファイルはスキップ
-            if file_path.name.startswith('_') or file_path.name.endswith('.example.json'):
+
+        # Load all JSON files in sites directory
+        for file_path in self.sites_dir.glob("*.json"):
+            # Skip _index.json and example files
+            if file_path.name.startswith("_") or file_path.name.endswith(".example.json"):
                 continue
-            
+
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, "r", encoding="utf-8") as f:
                     site_data = json.load(f)
-                    # updated_atはメタデータなので除外
-                    if 'updated_at' in site_data:
-                        del site_data['updated_at']
+                    # Exclude updated_at as it's metadata
+                    if "updated_at" in site_data:
+                        del site_data["updated_at"]
                     sites.append(site_data)
             except Exception as e:
-                print(f"警告: {file_path.name}の読み込みに失敗しました - {e}")
+                print(f"Warning: Failed to load {file_path.name} - {e}")
                 continue
-        
-        data = {
-            'updated_at': datetime.now().isoformat(),
-            'count': len(sites),
-            'sites': sites
-        }
-        
-        # sites.jsonを更新（次回から読み込めるように）
-        self.save_json('sites.json', data)
-        
+
+        data = {"updated_at": datetime.now().isoformat(), "count": len(sites), "sites": sites}
+
+        # Update sites.json (so it can be loaded next time)
+        self.save_json("sites.json", data)
+
         return data
-    
+
     def save_sites(self, sites: List[Dict]) -> bool:
         """
-        サイト設定リストを保存（後方互換性のため維持）
-        
+        Save site configuration list (maintained for backward compatibility)
+
         Args:
-            sites: サイト設定のリスト
-            
+            sites: List of site configurations
+
         Returns:
-            bool: 保存が成功したかどうか
+            bool: True if save succeeded, False otherwise
         """
         success = True
         for site in sites:
             if not self.save_site(site):
                 success = False
-        # save_site内で_update_sites_jsonが呼ばれるが、最後に念のため更新
+        # _update_sites_json is called in save_site, but update once more at the end for safety
         self._update_sites_json()
         return success
-    
+
     def delete_site(self, site_id: str) -> bool:
         """
-        サイト設定を削除し、sites.jsonも更新
-        
+        Delete site configuration and update sites.json
+
         Args:
-            site_id: サイトID
-            
+            site_id: Site ID
+
         Returns:
-            bool: 削除が成功したかどうか
+            bool: True if deletion succeeded, False otherwise
         """
         filename = f"{site_id}.json"
         file_path = self.sites_dir / filename
-        
+
         if not file_path.exists():
             return False
-        
+
         try:
             file_path.unlink()
-            # sites.jsonも更新
+            # Update sites.json
             self._update_sites_json()
             return True
         except Exception as e:
-            print(f"エラー: サイト設定の削除に失敗しました - {e}")
+            print(f"Error: Failed to delete site configuration - {e}")
             return False
-    
+
     def save_information_items(self, items: List[Dict]) -> bool:
         """
-        情報アイテムを保存
-        
+        Save information items
+
         Args:
-            items: 情報アイテムのリスト
-            
+            items: List of information items
+
         Returns:
-            bool: 保存が成功したかどうか
+            bool: True if save succeeded, False otherwise
         """
-        data = {
-            'updated_at': datetime.now().isoformat(),
-            'count': len(items),
-            'items': items
-        }
-        return self.save_json('information_items.json', data)
-    
+        data = {"updated_at": datetime.now().isoformat(), "count": len(items), "items": items}
+        return self.save_json("information_items.json", data)
+
     def load_information_items(self) -> Optional[Dict]:
         """
-        情報アイテムを読み込み
-        
+        Load information items
+
         Returns:
-            Dict: 情報アイテムデータ
+            Dict: Information items data
         """
-        return self.load_json('information_items.json')
-    
+        return self.load_json("information_items.json")
+
     def save_users(self, users: List[Dict]) -> bool:
         """
-        ユーザー情報を保存
-        
+        Save user information
+
         Args:
-            users: ユーザー情報のリスト
-            
+            users: List of user information
+
         Returns:
-            bool: 保存が成功したかどうか
+            bool: True if save succeeded, False otherwise
         """
-        data = {
-            'updated_at': datetime.now().isoformat(),
-            'count': len(users),
-            'users': users
-        }
-        return self.save_json('users.json', data)
-    
+        data = {"updated_at": datetime.now().isoformat(), "count": len(users), "users": users}
+        return self.save_json("users.json", data)
+
     def load_users(self) -> Optional[Dict]:
         """
-        ユーザー情報を読み込み
-        
+        Load user information
+
         Returns:
-            Dict: ユーザー情報データ
+            Dict: User information data
         """
-        return self.load_json('users.json')
-    
+        return self.load_json("users.json")
+
     def save_category_groups(self, groups: List[Dict]) -> bool:
         """
-        カテゴリグループ情報を保存
-        
+        Save category group information
+
         Args:
-            groups: カテゴリグループ情報のリスト
-            
+            groups: List of category group information
+
         Returns:
-            bool: 保存が成功したかどうか
+            bool: True if save succeeded, False otherwise
         """
-        data = {
-            'updated_at': datetime.now().isoformat(),
-            'count': len(groups),
-            'groups': groups
-        }
-        return self.save_json('category_groups.json', data)
-    
+        data = {"updated_at": datetime.now().isoformat(), "count": len(groups), "groups": groups}
+        return self.save_json("category_groups.json", data)
+
     def load_category_groups(self) -> Optional[Dict]:
         """
-        カテゴリグループ情報を読み込み
-        
+        Load category group information
+
         Returns:
-            Dict: カテゴリグループ情報データ
+            Dict: Category group information data
         """
-        return self.load_json('category_groups.json')
-    
+        return self.load_json("category_groups.json")
+
     def save_email_accounts(self, accounts: List[Dict]) -> bool:
         """
-        メールアカウント情報を保存
-        
+        Save email account information
+
         Args:
-            accounts: メールアカウント情報のリスト
-            
+            accounts: List of email account information
+
         Returns:
-            bool: 保存が成功したかどうか
+            bool: True if save succeeded, False otherwise
         """
-        data = {
-            'updated_at': datetime.now().isoformat(),
-            'count': len(accounts),
-            'accounts': accounts
-        }
-        return self.save_json('email_accounts.json', data)
-    
+        data = {"updated_at": datetime.now().isoformat(), "count": len(accounts), "accounts": accounts}
+        return self.save_json("email_accounts.json", data)
+
     def load_email_accounts(self) -> Optional[Dict]:
         """
-        メールアカウント情報を読み込み
-        
-        Returns:
-            Dict: メールアカウント情報データ
-        """
-        return self.load_json('email_accounts.json')
+        Load email account information
 
+        Returns:
+            Dict: Email account information data
+        """
+        return self.load_json("email_accounts.json")
