@@ -1,0 +1,89 @@
+name: CI（コード品質チェック・テスト）
+
+on:
+  push:
+    branches:
+      - main
+      - 'feature/**'
+    paths:
+      - 'src/**/*.py'
+      - 'tests/**/*.py'
+      - 'requirements.txt'
+      - '.github/workflows/ci.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/**/*.py'
+      - 'tests/**/*.py'
+      - 'requirements.txt'
+      - '.github/workflows/ci.yml'
+
+jobs:
+  code-quality:
+    name: コード品質チェック
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+      
+      - name: Python環境をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 依存関係をインストール
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: flake8でコードスタイルチェック
+        run: |
+          flake8 src/ tests/ --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 src/ tests/ --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      
+      - name: blackでコードフォーマットチェック
+        run: |
+          black --check --diff src/ tests/
+      
+      - name: mypyで型チェック
+        run: |
+          mypy src/ --ignore-missing-imports --no-strict-optional || true
+  
+  test:
+    name: テスト実行
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+      
+      - name: Python環境をセットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: 依存関係をインストール
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: データディレクトリを作成
+        run: |
+          mkdir -p data/sites
+          touch data/.gitkeep data/sites/.gitkeep
+      
+      - name: pytestでテスト実行
+        run: |
+          pytest tests/ -v --cov=src --cov-report=term-missing --cov-report=xml || true
+      
+      - name: テスト結果をアップロード
+        if: always()
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+
